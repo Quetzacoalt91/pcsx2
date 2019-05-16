@@ -16,7 +16,9 @@ macro(check_lib var lib)
 		include_directories(${${var}_INCLUDE_DIRS})
 		# Make sure include directories for headers found using find_path below
 		# are re-added when reconfiguring
-		include_directories(${${var}_INCLUDE})
+		if(${${var}_INCLUDE})
+			include_directories(${${var}_INCLUDE})
+		endif()
 		_internal_message("-- ${var} found pkg")
 	else()
         find_library(${var}_LIBRARIES ${lib})

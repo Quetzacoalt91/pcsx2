@@ -135,7 +135,7 @@ endif()
 # Architecture bitness detection
 include(TargetArch)
 target_architecture(PCSX2_TARGET_ARCHITECTURES)
-if(${PCSX2_TARGET_ARCHITECTURES} MATCHES "x86_64" OR ${PCSX2_TARGET_ARCHITECTURES} MATCHES "i386")
+if(${PCSX2_TARGET_ARCHITECTURES} MATCHES "x86_64" OR ${PCSX2_TARGET_ARCHITECTURES} MATCHES "i386" OR ${PCSX2_TARGET_ARCHITECTURES} MATCHES "armv6")
 	message(STATUS "Compiling a ${PCSX2_TARGET_ARCHITECTURES} build on a ${CMAKE_HOST_SYSTEM_PROCESSOR} host.")
 else()
 	message(FATAL_ERROR "Unsupported architecture: ${PCSX2_TARGET_ARCHITECTURES}")
@@ -188,6 +188,11 @@ elseif(${PCSX2_TARGET_ARCHITECTURES} MATCHES "x86_64")
     set(_ARCH_64 1)
     set(_M_X86 1)
     set(_M_X86_64 1)
+elseif(${PCSX2_TARGET_ARCHITECTURES} MATCHES "armv6")
+    set(CMAKE_THREAD_PREFER_PTHREAD ON)
+    set(THREADS_PREFER_PTHREAD_FLAG ON)
+    set(ARCH_FLAG "-march=native")
+    set(ARCH_FLAG "-marm")
 else()
     # All but i386 requires -fPIC
     set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -242,7 +247,11 @@ option(USE_PGO_OPTIMIZE "Enable PGO optimization (use profile)")
 
 # Note1: Builtin strcmp/memcmp was proved to be slower on Mesa than stdlib version.
 # Note2: float operation SSE is impacted by the PCSX2 SSE configuration. In particular, flush to zero denormal.
-set(COMMON_FLAG "-pipe -fvisibility=hidden -pthread -fno-builtin-strcmp -fno-builtin-memcmp -mfpmath=sse")
+set(COMMON_FLAG "-pipe -fvisibility=hidden -pthread -fno-builtin-strcmp -fno-builtin-memcmp")
+
+if(NOT ${PCSX2_TARGET_ARCHITECTURES} MATCHES "armv6")
+    set(COMMON_FLAG "${COMMON_FLAG} -mfpmath=sse")
+endif()
 
 if(USE_VTUNE)
     set(COMMON_FLAG "${COMMON_FLAG} -DENABLE_VTUNE")
