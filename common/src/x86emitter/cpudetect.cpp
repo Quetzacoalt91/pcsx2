@@ -16,7 +16,12 @@
 #include "PrecompiledHeader.h"
 #include "cpudetect_internal.h"
 #include "internal.h"
-#include "x86_intrin.h"
+#if (defined(__ARM_NEON__))
+    #include "arm_neon.h"
+
+#elif
+    #include "x86_intrin.h"
+#endif
 
 using namespace x86Emitter;
 

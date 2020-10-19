@@ -189,10 +189,17 @@ elseif(${PCSX2_TARGET_ARCHITECTURES} MATCHES "x86_64")
     set(_M_X86 1)
     set(_M_X86_64 1)
 elseif(${PCSX2_TARGET_ARCHITECTURES} MATCHES "armv6")
+    # CheckMe: Other architectures to handle?
     set(CMAKE_THREAD_PREFER_PTHREAD ON)
     set(THREADS_PREFER_PTHREAD_FLAG ON)
-    set(ARCH_FLAG "-march=native")
-    set(ARCH_FLAG "-marm")
+    set(ARCH_FLAG "-march=native -mcpu=native")
+    #set(ARCH_FLAG "-marm")
+    add_definitions(-D_M_ARM=1 -D__ARM_NEON__=1)
+    set(_M_ARM 1)
+    set(__ARM_NEON__ 1)
+
+    # arm requires -fPIC
+    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 else()
     # All but i386 requires -fPIC
     set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -249,7 +256,9 @@ option(USE_PGO_OPTIMIZE "Enable PGO optimization (use profile)")
 # Note2: float operation SSE is impacted by the PCSX2 SSE configuration. In particular, flush to zero denormal.
 set(COMMON_FLAG "-pipe -fvisibility=hidden -pthread -fno-builtin-strcmp -fno-builtin-memcmp")
 
-if(NOT ${PCSX2_TARGET_ARCHITECTURES} MATCHES "armv6")
+if(${PCSX2_TARGET_ARCHITECTURES} MATCHES "armv6")
+    set(COMMON_FLAG "${COMMON_FLAG} -mfpu=neon")
+else()
     set(COMMON_FLAG "${COMMON_FLAG} -mfpmath=sse")
 endif()
 

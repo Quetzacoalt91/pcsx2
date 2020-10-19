@@ -21,6 +21,8 @@
 
 #include "vtlb.h"
 
+#if defined(__i386__)
+
 #include "x86emitter/x86_intrin.h"
 
 // [TODO] This *could* be replaced with an assignment operator on u128 that implicitly
@@ -41,6 +43,24 @@ static __fi void ZeroQWC( u128& dest )
 {
 	_mm_store_ps( (float*)&dest, _mm_setzero_ps() );
 }
+#elif defined(__ARM_NEON__)
+
+#include <arm_neon.h>
+static __fi void CopyQWC( void* dest, const void* src )
+{
+	vst1q_f32( (float*)dest, vld1q_f32((const float*)src) );
+}
+
+static __fi void ZeroQWC( void* dest )
+{
+	vst1q_f32( (float*)dest, vdupq_n_f32(0) );
+}
+
+static __fi void ZeroQWC( u128& dest )
+{
+	vst1q_f32( (float*)&dest, vdupq_n_f32(0) );
+}
+#endif
 
 #define PSM(mem)	(vtlb_GetPhyPtr((mem)&0x1fffffff)) //pcsx2 is a competition.The one with most hacks wins :D
 

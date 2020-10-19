@@ -47,7 +47,9 @@
 #include <wx/msw/wrapwin.h>
 #endif
 
-#include "x86emitter/x86_intrin.h"
+#if !(defined(__ARM_NEON__))
+	#include "x86emitter/x86_intrin.h"
+#endif
 
 bool g_CDVDReset = false;
 

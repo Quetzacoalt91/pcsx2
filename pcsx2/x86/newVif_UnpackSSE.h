@@ -19,7 +19,9 @@
 #include "Vif_Dma.h"
 #include "newVif.h"
 
-#include "x86emitter/x86_intrin.h"
+#if !(defined(__ARM_NEON__))
+	#include "x86emitter/x86_intrin.h"
+#endif
 
 using namespace x86Emitter;
 

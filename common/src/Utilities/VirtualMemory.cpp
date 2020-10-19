@@ -21,7 +21,7 @@
 #endif
 
 #include "EventSource.inl"
-#include "MemsetFast.inl"
+//#include "MemsetFast.inl"
 
 template class EventSource<IEventListener_PageFault>;
 

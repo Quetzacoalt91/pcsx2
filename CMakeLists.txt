@@ -46,7 +46,6 @@ endif()
 # make common
 if(common_libs)
     add_subdirectory(common/src/Utilities)
-    add_subdirectory(common/src/x86emitter)
 endif()
 
 # make pcsx2

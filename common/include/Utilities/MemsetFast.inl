@@ -15,7 +15,21 @@
 
 #pragma once
 
+#ifdef _M_X86
 #include <xmmintrin.h>
+#elif defined(__ARM_NEON__)
+#include <arm_neon.h>
+#define _mm_store_ps vst1q_f32
+#define _mm_load_ps vld1q_f32
+#define _mm_loadh_pi vmovq_n_f32
+/**
+ * @see https://github.com/DLTcollab/sse2neon
+ */
+FORCE_INLINE __m128 _mm_setzero_ps(void)
+{
+	return vreinterpretq_m128_f32(vdupq_n_f32(0));
+}
+#endif
 
 template <u8 data>
 __noinline void memset_sse_a(void *dest, const size_t size)

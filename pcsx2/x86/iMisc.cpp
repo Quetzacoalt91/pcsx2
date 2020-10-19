@@ -15,7 +15,9 @@
 
 
 #include "PrecompiledHeader.h"
-#include "x86emitter/x86_intrin.h"
+#if !(defined(__ARM_NEON__))
+	#include "x86emitter/x86_intrin.h"
+#endif
 
 SSE_MXCSR g_sseMXCSR	= { DEFAULT_sseMXCSR };
 SSE_MXCSR g_sseVUMXCSR	= { DEFAULT_sseVUMXCSR };

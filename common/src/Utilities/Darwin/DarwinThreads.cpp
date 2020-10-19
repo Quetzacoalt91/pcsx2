@@ -41,7 +41,11 @@ __forceinline void Threading::SpinWait()
 {
     // If this doesn't compile you can just comment it out (it only serves as a
     // performance hint and isn't required).
+    #ifdef _M_X86
     __asm__("pause");
+    #elif defined(_M_ARM)
+    __asm__ ("yield");
+    #endif
 }
 
 __forceinline void Threading::EnableHiresScheduler()
