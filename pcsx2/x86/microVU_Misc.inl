@@ -147,6 +147,7 @@ void mVUmergeRegs(const xmm& dest, const xmm& src, int xyzw, bool modXYZW)
 {
 	xyzw &= 0xf;
 	if ( (dest != src) && (xyzw != 0) ) {
+		#ifdef _M_X86
 		if (x86caps.hasStreamingSIMD4Extensions && (xyzw != 0x8) && (xyzw != 0xf)) {
 			if (modXYZW) {
 				if		(xyzw == 1) { xINSERTPS(dest, src, _MM_MK_INSERTPS_NDX(0, 3, 0)); return; }
@@ -157,6 +158,7 @@ void mVUmergeRegs(const xmm& dest, const xmm& src, int xyzw, bool modXYZW)
 			xBLEND.PS(dest, src, xyzw);
 		}
 		else {
+		#endif
 			switch (xyzw) {
 				case 1:  if (modXYZW) mVUunpack_xyzw(src, src, 0);
 						 xMOVHL.PS(src, dest);		 // src = Sw Sz Dw Dz
@@ -205,7 +207,9 @@ void mVUmergeRegs(const xmm& dest, const xmm& src, int xyzw, bool modXYZW)
 				default: xMOVAPS(dest, src);
 						 break;
 			}
+		#ifdef _M_X86
 		}
+		#endif
 	} 
 }
 

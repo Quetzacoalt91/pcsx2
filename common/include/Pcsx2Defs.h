@@ -33,7 +33,7 @@
 
 #include "Pcsx2Types.h"
 
-#if !(defined(__ARM_NEON__))
+#ifdef _M_X86
 	#include "x86emitter/x86_intrin.h"
 #endif
 

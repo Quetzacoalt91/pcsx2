@@ -31,6 +31,8 @@ void SetCPUState(SSE_MXCSR sseMXCSR, SSE_MXCSR sseVUMXCSR)
 	g_sseMXCSR		= sseMXCSR.ApplyReserveMask();
 	g_sseVUMXCSR	= sseVUMXCSR.ApplyReserveMask();
 
+	#ifdef _M_X86
 	_mm_setcsr( g_sseMXCSR.bitmask );
+	#endif
 }
 

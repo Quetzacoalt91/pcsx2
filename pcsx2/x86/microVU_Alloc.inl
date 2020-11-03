@@ -167,12 +167,18 @@ __fi void getQreg(const xmm& reg, int qInstance)
 __ri void writeQreg(const xmm& reg, int qInstance)
 {
 	if (qInstance) {
+		#ifdef _M_X86
 		if (!x86caps.hasStreamingSIMD4Extensions) {
+		#endif
 			xPSHUF.D(xmmPQ, xmmPQ, 0xe1);
 			xMOVSS(xmmPQ, reg);
 			xPSHUF.D(xmmPQ, xmmPQ, 0xe1);
+		#ifdef _M_X86
 		}
-		else xINSERTPS(xmmPQ, reg, _MM_MK_INSERTPS_NDX(0, 1, 0));
+		else {
+			xINSERTPS(xmmPQ, reg, _MM_MK_INSERTPS_NDX(0, 1, 0));
+		}
+		#endif
 	}
 	else xMOVSS(xmmPQ, reg);
 }

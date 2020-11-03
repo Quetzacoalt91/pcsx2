@@ -190,7 +190,9 @@ protected:
 
 	wxString		m_elf_override;
 
+	#ifdef _M_X86
 	SSE_MXCSR		m_mxcsr_saved;
+	#endif
 
 public:
 	explicit SysCoreThread();

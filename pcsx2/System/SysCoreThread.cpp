@@ -299,7 +299,9 @@ void SysCoreThread::ExecuteTaskInThread()
 	Threading::EnableHiresScheduler(); // Note that *something* in SPU2 and GSdx also set the timer resolution to 1ms.
 	m_sem_event.WaitWithoutYield();
 
+	#ifdef _M_X86
 	m_mxcsr_saved.bitmask = _mm_getcsr();
+	#endif
 
 	PCSX2_PAGEFAULT_PROTECT
 	{
@@ -362,7 +364,9 @@ void SysCoreThread::OnCleanupInThread()
 	PADshutdown();
 	DEV9shutdown();
 
+	#ifdef _M_X86
 	_mm_setcsr(m_mxcsr_saved.bitmask);
+	#endif
 	Threading::DisableHiresScheduler();
 	_parent::OnCleanupInThread();
 
